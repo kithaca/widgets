@@ -48,13 +48,15 @@
 	var ReactDOM = __webpack_require__(158);
 	var Tabs = __webpack_require__(159);
 	var WeatherClock = __webpack_require__(160);
+	var Autocomplete = __webpack_require__(161);
 	
 	var Widgets = React.createClass({
 	  displayName: 'Widgets',
 	
 	  getInitialState: function () {
 	    return {
-	      tabs: [{ title: "first", content: "first widget", id: 0 }, { title: "second", content: "second widget", id: 1 }, { title: "third", content: "third widget", id: 2 }]
+	      tabs: [{ title: "first", content: "first widget", id: 0 }, { title: "second", content: "second widget", id: 1 }, { title: "third", content: "third widget", id: 2 }],
+	      names: ["Markov", "Gizmo", "Breakfast", "Earl", "Lassie", "Old Dan"]
 	    };
 	  },
 	
@@ -64,7 +66,8 @@
 	      'div',
 	      null,
 	      React.createElement(Tabs, { tabs: this.state.tabs }),
-	      React.createElement(WeatherClock, null)
+	      React.createElement(WeatherClock, null),
+	      React.createElement(Autocomplete, { names: this.state.names })
 	    );
 	  }
 	});
@@ -19837,6 +19840,62 @@
 	});
 	
 	module.exports = WeatherClock;
+
+/***/ },
+/* 161 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var ReactDOM = __webpack_require__(158);
+	
+	var Autocomplete = React.createClass({
+	  displayName: 'Autocomplete',
+	
+	  getInitialState: function () {
+	    return { value: "" };
+	  },
+	
+	  handleChange: function (event) {
+	    this.setState({ value: event.target.value });
+	  },
+	
+	  handleClick: function (name) {
+	    this.setState({ value: name });
+	  },
+	
+	  render: function () {
+	    var that = this;
+	    var downcased = this.props.names.map(function (name) {
+	      return name.toLowerCase();
+	    });
+	    var foundNames = downcased.filter(function (el) {
+	      var re = new RegExp(that.state.value);
+	      if (el.match(re)) {
+	        return true;
+	      } else {
+	        return false;
+	      }
+	    });
+	    return React.createElement(
+	      'article',
+	      null,
+	      React.createElement('input', { type: 'text', value: this.state.value, onChange: this.handleChange }),
+	      React.createElement(
+	        'ul',
+	        null,
+	        foundNames.map(function (el) {
+	          return React.createElement(
+	            'li',
+	            { onClick: that.handleClick.bind(that, el) },
+	            el
+	          );
+	        })
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = Autocomplete;
 
 /***/ }
 /******/ ]);
